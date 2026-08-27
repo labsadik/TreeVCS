@@ -1,7 +1,0 @@
-{
-  "files.associations": {
-    ".treeignore": "ignore"
-  },
-  "git.ignoreLimitWarning": 10000,
-  "git.excludeFileName": ".treeignore"
-}

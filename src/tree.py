@@ -3,6 +3,7 @@ import sys
 import json
 import hashlib
 import fnmatch
+import shlex
 from datetime import datetime
 
 __VERSION__ = "1.0.0"
@@ -286,42 +287,97 @@ def render_tree(start_dir, prefix="", patterns=None, status_map=None):
             badge = f"  {file_status}" if file_status and file_status != "[clean]" else ""
             print(f"{prefix}{connector}{entry}{badge}")
 
+def print_help():
+    print(f"🌳 {__APP_NAME__} v{__VERSION__} by {__AUTHOR__}")
+    print("\nAvailable Commands:")
+    print("  tree                      Display directory structure")
+    print("  init                      Initialize repository")
+    print("  add <file|.>              Stage file changes")
+    print("  commit -m \"<msg>\"         Record staged changes")
+    print("  status                    Show working directory status")
+    print("  log                       Show commit history log")
+    print("  --version / -v            Show version info")
+    print("  --help / -h / help        Show this help screen")
+    print("  exit / quit               Close shell window")
+
+def run_command(args):
+    if not args:
+        target_directory = "."
+        print(os.path.abspath(target_directory))
+        render_tree(target_directory)
+        return
+
+    cmd = args[0]
+    if cmd in ["--help", "-h", "help"]:
+        print_help()
+    elif cmd in ["--version", "-v", "version"]:
+        print(f"🌳 {__APP_NAME__} Version {__VERSION__} (Publisher: {__AUTHOR__})")
+    elif cmd == "init":
+        init_repo()
+    elif cmd == "add":
+        add_files(args[1:] if len(args) > 1 else ["."])
+    elif cmd == "commit":
+        if len(args) >= 3 and args[1] == "-m":
+            commit_changes(args[2])
+        elif len(args) >= 2 and args[1] != "-m":
+            commit_changes(args[1])
+        else:
+            print('Usage: tree commit -m "Commit message"')
+    elif cmd == "log":
+        show_log()
+    elif cmd == "status":
+        show_status()
+    elif cmd == "tree":
+        target = args[1] if len(args) > 1 else "."
+        print(os.path.abspath(target))
+        render_tree(target)
+    else:
+        print(f"Unknown command: '{cmd}'. Type 'help' for available commands.")
+
 def main():
     args = sys.argv[1:]
-    is_double_clicked = len(args) == 0
 
-    if args and args[0] in ["--help", "-h"]:
-        print(f"🌳 {__APP_NAME__} v{__VERSION__} by {__AUTHOR__}")
-        print("Usage:\n  tree              Display directory structure\n  tree init         Initialize repository\n  tree add <file|.> Stage file changes\n  tree commit -m    Record staged changes\n  tree status       Show working directory status\n  tree log          Show commit history log")
-        return
-
-    if args and args[0] in ["--version", "-v"]:
-        print(f"🌳 {__APP_NAME__} Version {__VERSION__} (Publisher: {__AUTHOR__})")
-        return
-
+    # Direct terminal command execution (e.g. `tree status`)
     if args:
-        cmd = args[0]
-        if cmd == "init": init_repo(); return
-        elif cmd == "add": add_files(args[1:] if len(args) > 1 else ["."]); return
-        elif cmd == "commit": 
-            if len(args) >= 3 and args[1] == "-m": commit_changes(args[2])
-            else: print('Usage: tree commit -m "Commit message"')
-            return
-        elif cmd == "log": show_log(); return
-        elif cmd == "status": show_status(); return
+        run_command(args)
+        return
 
-    # Default action
+    # Interactive REPL Shell (Double-clicked execution)
+    print("==================================================")
+    print(f"         🌳 {__APP_NAME__} Interactive CLI Shell           ")
+    print(f"  Developer: {__AUTHOR__} | Version: {__VERSION__}       ")
+    print("==================================================")
+    print("Type commands directly (e.g., 'init', 'status', 'add .', 'commit -m \"msg\"', 'help')")
+    print("Type 'exit' or 'quit' to close this window.\n")
+
     target_directory = "."
     print(os.path.abspath(target_directory))
     render_tree(target_directory)
+    print()
 
-    # Prevent immediate close if double-clicked from file explorer
-    if is_double_clicked and sys.platform == "win32":
-        print("\n" + "-"*40)
+    while True:
         try:
-            input("Press Enter to exit (Run 'tree --help' in terminal for commands)...")
+            user_input = input("tree> ").strip()
+            if not user_input:
+                continue
+            
+            if user_input.lower() in ["exit", "quit", "q"]:
+                print("Exiting TreeVCS...")
+                break
+
+            # Remove optional 'tree ' command prefix if typed by user
+            if user_input.startswith("tree "):
+                user_input = user_input[5:].strip()
+
+            parsed_args = shlex.split(user_input)
+            run_command(parsed_args)
+            print()
+
         except KeyboardInterrupt:
-            pass
+            print("\nExiting TreeVCS...")
+            break
+        except Exception as e:
+            print(f"Error: {e}\n")
 
 if __name__ == "__main__":
     main()
