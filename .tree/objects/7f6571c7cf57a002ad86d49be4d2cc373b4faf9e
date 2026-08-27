@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-08-27T14:16:33.893012",
+  "message": "Update publisher to Sadik Laskar and fix default tree view",
+  "parent": "7740cdba431c423b77e8e4c43513c326eb254864",
+  "tree": {
+    ".treeignore": "3a7d19041c4e51458de313d5aa37c7a232a38340",
+    "scripts/app_icon.ico": "2fc9d2aec32751ff31cfc97bf844ca809e1d1883",
+    "scripts/installer_script.iss": "16feb93cfb161fad1b03bf5579e8733a9cc6160d",
+    "src/tree.py": "803347c2e421374b9158b4b897a9517466ef070e",
+    ".vscode/settings.json": "597847ad865c9bed045e7be79454517ad7f47ef0",
+    "version.txt": "46cde81765208b8b552f988fa168d10793a2ecc0",
+    "f": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+  }
+}

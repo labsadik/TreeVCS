@@ -1,0 +1,8 @@
+# TreeVCS Ignore File
+.tree/
+__pycache__/
+*.pyc
+*.spec
+build/
+dist/
+releases/

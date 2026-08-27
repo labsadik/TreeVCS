@@ -1,0 +1,34 @@
+[Setup]
+AppName=TreeVCS
+AppVersion=1.0.0
+AppPublisher=Sadik Laskar
+AppPublisherURL=https://github.com/Sadik/TreeVCS
+DefaultDirName={autopf}\TreeVCS
+DefaultGroupName=TreeVCS
+UninstallDisplayIcon={app}\treevcs.exe
+SetupIconFile=app_icon.ico
+Compression=lzma2
+SolidCompression=yes
+OutputDir=..\releases\v1.0.0
+OutputBaseFilename=treevcs_installer_v1.0.0
+
+[Files]
+Source: "..\releases\v1.0.0\treevcs.exe"; DestDir: "{app}"; Flags: ignoreversion
+
+[Code]
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+  Path: String;
+begin
+  if CurStep = ssPostInstall then
+  begin
+    if RegQueryStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path) then
+    begin
+      if Pos(ExpandConstant('{app}'), Path) = 0 then
+      begin
+        Path := Path + ';' + ExpandConstant('{app}');
+        RegWriteStringValue(HKEY_CURRENT_USER, 'Environment', 'Path', Path);
+      end;
+    end;
+  end;
+end;
