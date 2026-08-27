@@ -1,3 +1,4 @@
+
 # TreeVCS (Tree Version Control System)
 
 **TreeVCS** is a lightweight, intuitive, tree-structured version control system engineered for developers who need clean, visual snapshot management without the bloat of traditional version control tools. Built with a focus on fast execution, visual commit lineage, and zero-dependency standalone distribution, TreeVCS simplifies local tracking, branching, and production releases.
@@ -6,9 +7,9 @@
 
 ## Overview & Purpose
 
-Modern software projects often suffer from overly complex Git workflows, detached HEAD states, and heavy overhead when all that is needed is deterministic snapshot tracking and clean workspace management.
+Modern software projects often suffer from overly complex workflows and heavy overhead when all that is needed is deterministic snapshot tracking and clean workspace management. 
 
-**TreeVCS** solves this by enforcing a structural tree-based model for file history. It tracks project revisions as explicit, visual branches that mirror a logical file hierarchy. Designed as a native 64-bit Windows application, TreeVCS can be installed via a signed setup executable or run directly from source.
+**TreeVCS** solves this by enforcing a structural tree-based model for file history. It tracks project revisions as explicit, visual branches that mirror a logical file hierarchy. Designed as a native 64-bit Windows application, TreeVCS can be installed via a setup executable or run directly from source.
 
 ---
 
@@ -16,8 +17,8 @@ Modern software projects often suffer from overly complex Git workflows, detache
 
 * **Single-Binary Portability:** Compiles into a standalone executable (`tree.exe`) with zero required Python runtime dependencies on target machines.
 * **Intuitive Branching Engine:** Tracks commits in hierarchical tree nodes, making revision traversal and workspace rollbacks instantaneous.
-* **Code-Signed Security:** Distributed releases are signed with Authenticode SHA256 certificates for safe Windows deployment.
-* **Automated Packaging Pipeline:** Built-in support for PyInstaller and Inno Setup for rapid, repeatable single-command builds.
+* **Automatic Exclusions (`.treeignore`):** Automatically generates a `.treeignore` file on initialization, functioning identically to `.gitignore` to keep temporary or unwanted build files out of your snapshots.
+* **Interactive Shell:** Offers a convenient dedicated command-line shell interface (`tree>`) for continuous command entry.
 * **Minimal Resource Footprint:** Optimized snapshot storage engine designed for fast local operation.
 
 ---
@@ -29,38 +30,35 @@ Modern software projects often suffer from overly complex Git workflows, detache
 | **Operating System** | Windows 10 / 11 (64-bit) |
 | **Python (Source Build Only)** | Python 3.11+ |
 | **Build Tools (Developers)** | PyInstaller 6.x+, Inno Setup 7+ |
-| **Permissions** | Standard user execution; Administrator required for global `Program Files` setup |
+| **Permissions** | Standard user execution; Administrator required for global setup |
 
 ---
 
-## Installation
+## Installation & Getting Started
 
-### Option A: Standard Windows Installer (Recommended)
+### Option A: Standard Windows Installer (Recommended for End Users)
 
-1. Download the latest `tree_installer_v1.0.0.exe` from the [Releases](https://www.google.com/search?q=https://github.com/labsadik/TreeVCS/releases) page.
-2. Run the setup executable.
-3. Follow the installation wizard prompts. The installer automatically registers `tree` into your system `PATH`.
-4. Open a new PowerShell terminal and verify installation:
+If you just want to download and use the tool without messing with code, follow these steps:
+
+1. Download the latest `tree_installer_v1.0.0.exe` directly from the [Releases Page](https://github.com/labsadik/TreeVCS/releases).
+2. Run the setup executable and follow the wizard instructions.
+3. Open a **new** PowerShell terminal and verify your installation:
+   ```powershell
+   tree --version
+
+### Option B: Cloning and Building from Source (For Developers)
+
+If you are cloning the repository to contribute or build it yourself:
+
+1. Clone your repository:
 ```powershell
-tree --version
-
-```
-
-
-
-### Option B: Building from Source
-
-If you prefer to compile the application executable yourself:
-
-1. Clone the repository:
-```powershell
-git clone https://github.com/labsadik/TreeVCS.git
+git clone [https://github.com/labsadik/TreeVCS.gif](https://github.com/labsadik/TreeVCS.gif)
 cd TreeVCS
 
 ```
 
 
-2. Install dependencies (if any):
+2. Install dependencies:
 ```powershell
 python -m pip install --upgrade pip
 pip install pyinstaller
@@ -74,18 +72,15 @@ pyinstaller --onefile --name=tree --icon=scripts/app_icon.ico --version-file=ver
 
 ```
 
-
-
 ---
 
 ## Setup & First-Time Configuration
 
-After installing TreeVCS, initialize your identity before creating snapshots:
+After installing TreeVCS via the executable, configure your user identity before making snapshots:
 
 ```powershell
-# Set global author credentials
-tree config --global user.name "user name"
-tree config --global user.email "user@example.com"
+tree config --global user.name "Your Name"
+tree config --global user.email "your.email@example.com"
 
 ```
 
@@ -93,55 +88,84 @@ tree config --global user.email "user@example.com"
 
 ## Usage Guide & Command Reference
 
-### 1. Initialize a Repository
+TreeVCS can be launched interactively by simply typing `tree.exe` in your project folder, which opens the interactive shell prompt (`tree> `). Here is how to use it step-by-step with examples:
 
-Navigate to your project folder and initialize tracking:
+### 1. Launch the Interactive Shell
+
+Navigate to your project folder in PowerShell and launch the tool:
 
 ```powershell
 cd C:\Users\YourUser\Projects\MyProject
-tree init
+tree.exe
 
 ```
 
-### 2. Stage and Commit Changes
+*(Your prompt will change to `tree> `)*
 
-Add files to the staging index and commit them to the active node:
+### 2. Initialize a Repository
 
-```powershell
-# Add all files in workspace
-tree add .
+Inside the interactive prompt, initialize tracking for your project:
 
-# Create a version commit
-tree commit -m "Initial production commit for v1.0.0"
+```text
+tree> init
 
 ```
 
-### 3. Inspect Status and History
+*(This creates a `.tree/` directory and a `.treeignore` file. Files specified in `.treeignore` are automatically excluded from tracking, exactly like `.gitignore`).*
 
-Check current working tree modifications and visual commit lineage:
+### 3. Stage and Commit Changes
 
-```powershell
-# View modified, added, or deleted files
-tree status
+Add your project files to the staging area and record a commit snapshot:
 
-# Display visual tree graph of commits
-tree log --graph
+```text
+# Stage changes
+tree> add .
+
+# Commit with a message
+tree> commit -m "Initial production commit for v1.0.0"
 
 ```
 
-### 4. Branching and Navigation
+### 4. Check Status and History
 
-Create structured branches and move across historical nodes:
+Verify your working directory state or view past commits:
 
-```powershell
-# Create a new feature branch
-tree branch feature/login-system
+```text
+# View file modification status
+tree> status
 
-# Switch to the feature branch
-tree checkout feature/login-system
+# Display commit history log
+tree> log
 
-# Rollback to a specific commit ID
-tree checkout c4f891a
+```
+
+### 5. Render Directory Tree & Exit
+
+Display a visual layout of your directory or exit the shell:
+
+```text
+# Show directory structure
+tree> tree
+
+# Close the interactive shell
+tree> exit
+
+```
+
+---
+
+## VS Code Integration for `.treeignore`
+
+To make `.treeignore` display with the proper ignore icon and syntax highlighting in VS Code, create a folder named `.vscode` in your project root and add a file named `settings.json` with the following configuration:
+
+```json
+{
+  "files.associations": {
+    ".treeignore": "ignore"
+  },
+  "git.ignoreLimitWarning": 10000,
+  "git.excludeFileName": ".treeignore"
+}
 
 ```
 
@@ -156,36 +180,12 @@ TreeVCS/
 ├── scripts/
 │   ├── app_icon.ico         # Executable icon asset
 │   └── installer_script.iss # Inno Setup compilation script
-├── build/                   # Intermediate build artifacts
 ├── releases/
 │   └── v1.0.0/
 │       ├── tree.exe         # Compiled standalone binary
-│       └── tree_installer_v1.0.0.exe  # Final signed setup wizard
+│       └── tree_installer_v1.0.0.exe  # Final setup wizard
 ├── version.txt              # Windows executable metadata
 └── README.md                # Documentation
-
-```
-
----
-
-## Developer Release Pipeline
-
-To produce a clean, signed production release:
-
-```powershell
-# 1. Clean previous build directories
-Remove-Item -Recurse -Force build, dist, releases -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Path releases\v1.0.0 -Force
-
-# 2. Compile Python entry point to executable
-pyinstaller --onefile --name=tree --icon=scripts/app_icon.ico --version-file=version.txt --distpath=releases/v1.0.0 src/tree.py
-
-# 3. Compile installer package using Inno Setup
-& "C:\Program Files\Inno Setup 7\ISCC.exe" "scripts\installer_script.iss"
-
-# 4. Apply Authenticode SHA256 Signature
-$cert = Get-ChildItem Cert:\CurrentUser\My | Where-Object { $_.Subject -match "Sadik Laskar" } | Select-Object -First 1
-Set-AuthenticodeSignature -FilePath "releases\v1.0.0\tree_installer_v1.0.0.exe" -Certificate $cert -HashAlgorithm SHA256
 
 ```
 
@@ -194,5 +194,5 @@ Set-AuthenticodeSignature -FilePath "releases\v1.0.0\tree_installer_v1.0.0.exe" 
 ## Author & License
 
 * **Developer:** Sadik Laskar ([@labsadik](https://www.google.com/search?q=https://github.com/labsadik))
-* **Repository:** [https://github.com/labsadik/TreeVCS](https://www.google.com/search?q=https://github.com/labsadik/TreeVCS)
+* **Repository:** [https://github.com/labsadik/TreeVCS](https://github.com/labsadik/TreeVCS)
 * **License:** Distributed under the MIT License. See `LICENSE` for details.
