@@ -16,10 +16,8 @@ AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 AppCopyright=Copyright (C) 2026 {#MyAppPublisher}
-AppComments=TreeVCS Developed by {#MyAppPublisher}
-UninstallDisplayPublisher={#MyAppPublisher}
 
-; Windows File Version Info (Removes "Unknown Author / Publisher" strings)
+; Windows File Properties (Removes "Unknown Author / Publisher")
 VersionInfoCompany={#MyAppPublisher}
 VersionInfoCopyright=Copyright (C) 2026 {#MyAppPublisher}
 VersionInfoDescription=TreeVCS Setup Installer created by {#MyAppPublisher}
